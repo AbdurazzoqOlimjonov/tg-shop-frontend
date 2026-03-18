@@ -835,7 +835,7 @@
 			<div class="nav-links">
 				<button class="nav-link active" onclick="goPage('shop', this)">🛍 Do'kon</button>
 				<button class="nav-link" onclick="goPage('myorders', this)">📦 Buyurtmalarim</button>
-				<button class="nav-link admin-link" onclick="goPage('admin', this)">⚙️ Admin</button>
+				<button class="nav-link admin-link" id="admin-btn" onclick="goPage('admin', this)" style="display: none">⚙️ Admin</button>
 			</div>
 		</nav>
 
@@ -902,12 +902,16 @@
 		<div class="toast" id="toast"></div>
 
 		<script>
-			// ⚠️ Deploy qilgandan keyin shu qatorni o'zgartiring:
-			// const BACKEND = 'https://tg-premium-shop-production.up.railway.app';
+			const ADMIN_KEY = 'theMODELER1';
+			const isAdmin =
+				new URLSearchParams(window.location.search).get('admin') === ADMIN_KEY ||
+				localStorage.getItem('tg_admin_key') === ADMIN_KEY;
+			if (isAdmin) localStorage.setItem('tg_admin_key', ADMIN_KEY);
+
 			const BACKEND =
 				window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 					? 'http://localhost:8000'
-					: 'https://tg-premium-shop-production.up.railway.app'; // <-- Render URL ingizni yozing
+					: 'https://tg-premium-shop-production.up.railway.app';
 			const API = BACKEND + '/api';
 
 			let allProducts = [],
@@ -924,6 +928,10 @@
 			};
 
 			function goPage(page, btn) {
+				if (page === 'admin' && !isAdmin) {
+					toast('❌ Ruxsat yoq!');
+					return;
+				}
 				document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 				document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
 				document.getElementById('page-' + page).classList.add('active');
@@ -1230,6 +1238,7 @@
 					m.innerHTML = '<div style="padding:40px;color:#999">❌ Ulanish xatosi</div>';
 				}
 			}
+			if (isAdmin) document.getElementById('admin-btn').style.display = '';
 			loadProducts();
 			loadPayConfigs();
 		</script>
