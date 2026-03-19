@@ -180,6 +180,10 @@
 				box-shadow: 0 4px 20px rgba(34, 158, 217, 0.15);
 				transform: translateY(-2px);
 			}
+			.product-card.sold-out {
+				opacity: 0.6;
+				cursor: not-allowed;
+			}
 			.card-img {
 				height: 130px;
 				display: flex;
@@ -250,6 +254,22 @@
 				padding: 3px 8px;
 				border-radius: 6px;
 			}
+			.sold-tag {
+				position: absolute;
+				top: 10px;
+				left: 10px;
+				background: #888;
+				color: #fff;
+				font-size: 10px;
+				font-weight: 700;
+				padding: 3px 8px;
+				border-radius: 6px;
+			}
+			.stock-badge {
+				font-size: 11px;
+				color: var(--danger);
+				font-weight: 700;
+			}
 			.buy-btn {
 				background: var(--tg);
 				color: #fff;
@@ -263,6 +283,11 @@
 			.buy-btn:hover {
 				background: var(--tg2);
 			}
+			.buy-btn:disabled {
+				background: #ccc;
+				cursor: not-allowed;
+			}
+			/* MODAL */
 			.overlay {
 				display: none;
 				position: fixed;
@@ -280,7 +305,7 @@
 				background: #fff;
 				border-radius: 20px;
 				width: 100%;
-				max-width: 440px;
+				max-width: 460px;
 				max-height: 90vh;
 				overflow-y: auto;
 				box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
@@ -409,6 +434,25 @@
 			.form-input:focus {
 				border-color: var(--tg);
 			}
+			.timer-box {
+				background: #fff3cd;
+				border: 1.5px solid #f5a623;
+				border-radius: 10px;
+				padding: 12px;
+				margin-bottom: 14px;
+				text-align: center;
+				font-size: 14px;
+				font-weight: 700;
+				color: #854f0b;
+			}
+			.screenshot-preview {
+				width: 100%;
+				max-height: 200px;
+				object-fit: contain;
+				border-radius: 10px;
+				margin-top: 8px;
+				border: 1.5px solid var(--border);
+			}
 			.submit-btn {
 				width: 100%;
 				background: linear-gradient(135deg, var(--tg), var(--green));
@@ -449,6 +493,7 @@
 				font-size: 14px;
 				margin: 8px 0;
 			}
+			/* ORDERS */
 			.orders-page {
 				padding: 24px;
 			}
@@ -520,6 +565,7 @@
 				background: #fcebeb;
 				color: var(--danger);
 			}
+			/* ADMIN */
 			.admin-wrap {
 				display: grid;
 				grid-template-columns: 220px 1fr;
@@ -662,6 +708,14 @@
 			.btn-cancel:hover {
 				background: #fcebeb;
 			}
+			.screenshot-thumb {
+				width: 40px;
+				height: 40px;
+				object-fit: cover;
+				border-radius: 6px;
+				cursor: pointer;
+				border: 1px solid var(--border);
+			}
 			.pay-config-grid {
 				display: grid;
 				grid-template-columns: repeat(3, 1fr);
@@ -702,7 +756,7 @@
 			}
 			.products-admin-grid {
 				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 				gap: 12px;
 			}
 			.p-admin-card {
@@ -710,9 +764,12 @@
 				border: 1.5px solid var(--border);
 				border-radius: 12px;
 				padding: 14px;
+			}
+			.p-admin-top {
 				display: flex;
 				align-items: center;
 				gap: 10px;
+				margin-bottom: 10px;
 			}
 			.p-admin-info {
 				flex: 1;
@@ -728,6 +785,31 @@
 			.p-admin-price {
 				font-size: 12px;
 				color: var(--muted);
+			}
+			.p-admin-actions {
+				display: flex;
+				gap: 6px;
+			}
+			.edit-price-input {
+				width: 100%;
+				padding: 6px 10px;
+				border: 1.5px solid var(--tg);
+				border-radius: 7px;
+				font-size: 13px;
+				font-family: inherit;
+				outline: none;
+				margin-bottom: 6px;
+			}
+			.price-save-btn {
+				width: 100%;
+				background: var(--green);
+				color: #fff;
+				border: none;
+				border-radius: 7px;
+				padding: 6px;
+				font-size: 12px;
+				font-weight: 700;
+				cursor: pointer;
 			}
 			.toggle-active {
 				padding: 4px 10px;
@@ -781,6 +863,25 @@
 				font-size: 14px;
 				font-weight: 800;
 				cursor: pointer;
+			}
+			/* Screenshot modal */
+			.img-overlay {
+				display: none;
+				position: fixed;
+				inset: 0;
+				background: rgba(0, 0, 0, 0.85);
+				z-index: 300;
+				align-items: center;
+				justify-content: center;
+				padding: 20px;
+			}
+			.img-overlay.open {
+				display: flex;
+			}
+			.img-overlay img {
+				max-width: 100%;
+				max-height: 90vh;
+				border-radius: 12px;
 			}
 			.toast {
 				position: fixed;
@@ -890,6 +991,7 @@
 			</div>
 		</div>
 
+		<!-- Buy Modal -->
 		<div class="overlay" id="overlay" onclick="if (event.target === this) closeModal();">
 			<div class="modal">
 				<div class="modal-header">
@@ -899,6 +1001,12 @@
 				<div class="modal-body" id="modal-body"></div>
 			</div>
 		</div>
+
+		<!-- Screenshot viewer -->
+		<div class="img-overlay" id="img-overlay" onclick="this.classList.remove('open')">
+			<img id="img-viewer" src="" alt="chek" />
+		</div>
+
 		<div class="toast" id="toast"></div>
 
 		<script>
@@ -914,22 +1022,25 @@
 					: 'https://tg-premium-shop-production.up.railway.app';
 			const API = BACKEND + '/api';
 
+			const COOLDOWN_MS = 15 * 60 * 1000; // 15 daqiqa
+
 			let allProducts = [],
 				payConfigs = {},
 				selectedProduct = null,
 				selectedPay = 'click';
 			let myOrderIds = JSON.parse(localStorage.getItem('tg_orders') || '[]');
+
 			const fmt = n => Number(n).toLocaleString('ru-RU') + " so'm";
 			const toast = msg => {
 				const t = document.getElementById('toast');
 				t.textContent = msg;
 				t.classList.add('show');
-				setTimeout(() => t.classList.remove('show'), 2500);
+				setTimeout(() => t.classList.remove('show'), 3000);
 			};
 
 			function goPage(page, btn) {
 				if (page === 'admin' && !isAdmin) {
-					toast('❌ Ruxsat yoq!');
+					toast('Ruxsat yoq!');
 					return;
 				}
 				document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -940,15 +1051,17 @@
 				if (page === 'admin') adminSection('dashboard', document.querySelector('.sidebar-item'));
 			}
 
+			// ─── PRODUCTS ─────────────────────────────
 			async function loadProducts() {
 				try {
 					allProducts = await fetch(`${API}/products/`).then(r => r.json());
 					renderProducts(allProducts);
 				} catch (e) {
 					document.getElementById('products-grid').innerHTML =
-						`<div style="padding:40px;text-align:center;color:#999;grid-column:1/-1">❌ Backend bilan aloqa yo'q<br><small>URL: ${API}</small></div>`;
+						`<div style="padding:40px;text-align:center;color:#999;grid-column:1/-1">❌ Serverga ulanib bo'lmadi</div>`;
 				}
 			}
+
 			async function loadPayConfigs() {
 				try {
 					const c = await fetch(`${API}/admin/payments`).then(r => r.json());
@@ -962,33 +1075,40 @@
 					};
 				}
 			}
+
 			function renderProducts(list) {
 				const g = document.getElementById('products-grid');
 				if (!list.length) {
-					g.innerHTML =
-						'<div style="padding:40px;text-align:center;color:#999;grid-column:1/-1">Bu kategoriyada mahsulot yo\'q</div>';
+					g.innerHTML = '<div style="padding:40px;text-align:center;color:#999;grid-column:1/-1">Mahsulot yoq</div>';
 					return;
 				}
 				const ic = { nft: 'nft', username: 'username', stars: 'stars', premium: 'premium' };
 				g.innerHTML = list
-					.map(
-						p => `
-    <div class="product-card" onclick="openBuyModal(${p.id})">
+					.map(p => {
+						const soldOut = p.stock !== undefined && p.stock <= 0;
+						return `
+    <div class="product-card ${soldOut ? 'sold-out' : ''}" onclick="${soldOut ? "toast('Tugagan!')" : `openBuyModal(${p.id})`}">
       ${p.is_rental ? '<span class="rent-tag">Arenda</span>' : ''}
+      ${soldOut ? '<span class="sold-tag">Tugagan</span>' : ''}
       <div class="card-img ${p.is_rental ? 'rental' : ic[p.category] || 'premium'}">${p.emoji}</div>
       <div class="card-body">
         <div class="card-category">${p.category.toUpperCase()}</div>
         <div class="card-title">${p.title}</div>
         <div class="card-desc">${(p.description || '').split('\n')[0]}</div>
         <div class="card-footer">
-          <div><div class="price">${fmt(p.price)}</div>${p.original_price ? `<div class="old-price">${fmt(p.original_price)}</div>` : ''}</div>
-          <button class="buy-btn">Sotib ol</button>
+          <div>
+            <div class="price">${fmt(p.price)}</div>
+            ${p.original_price ? `<div class="old-price">${fmt(p.original_price)}</div>` : ''}
+            ${p.stock <= 3 && p.stock > 0 ? `<div class="stock-badge">Qoldi: ${p.stock} ta</div>` : ''}
+          </div>
+          <button class="buy-btn" ${soldOut ? 'disabled' : ''}>${soldOut ? 'Tugagan' : 'Sotib ol'}</button>
         </div>
       </div>
-    </div>`,
-					)
+    </div>`;
+					})
 					.join('');
 			}
+
 			function filterProducts(cat, btn) {
 				document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
 				btn.classList.add('active');
@@ -996,38 +1116,88 @@
 				if (cat === 'rental') return renderProducts(allProducts.filter(p => p.is_rental));
 				renderProducts(allProducts.filter(p => p.category === cat && !p.is_rental));
 			}
+
+			// ─── BUY MODAL ────────────────────────────
 			function openBuyModal(id) {
+				// 15 daqiqa cooldown tekshirish
+				const lastOrder = localStorage.getItem('last_order_time_' + id);
+				if (lastOrder) {
+					const diff = Date.now() - parseInt(lastOrder);
+					if (diff < COOLDOWN_MS) {
+						const left = Math.ceil((COOLDOWN_MS - diff) / 60000);
+						toast(`⏳ ${left} daqiqadan keyin qayta buyurtma qilishingiz mumkin!`);
+						return;
+					}
+				}
 				selectedProduct = allProducts.find(p => p.id === id);
 				selectedPay = 'click';
 				document.getElementById('overlay').classList.add('open');
 				renderBuyModal();
 			}
+
 			function closeModal() {
 				document.getElementById('overlay').classList.remove('open');
 			}
+
 			function renderBuyModal() {
-				const p = selectedProduct,
-					pay = payConfigs[selectedPay] || { card_number: '—', owner_name: '—' },
-					pe = { click: '🔵', payme: '🟢', uzcard: '🟡' };
+				const p = selectedProduct;
+				const pay = payConfigs[selectedPay] || { card_number: '—', owner_name: '—' };
+				const pe = { click: '🔵', payme: '🟢', uzcard: '🟡' };
 				document.getElementById('modal-body').innerHTML = `
-    <div class="product-info-box"><div class="product-info-emoji">${p.emoji}</div><div><div style="font-size:15px;font-weight:700">${p.title}</div><div class="product-info-price">${fmt(p.price)}</div></div></div>
+    <div class="product-info-box">
+      <div class="product-info-emoji">${p.emoji}</div>
+      <div>
+        <div style="font-size:15px;font-weight:700">${p.title}</div>
+        <div class="product-info-price">${fmt(p.price)}</div>
+      </div>
+    </div>
     <div class="pay-title">TO'LOV USULINI TANLANG</div>
-    <div class="pay-methods">${['click', 'payme', 'uzcard'].map(m => `<div class="pay-method ${m === selectedPay ? 'sel' : ''}" onclick="selPay('${m}')"><div class="pay-method-emoji">${pe[m]}</div><div class="pay-method-name">${m[0].toUpperCase() + m.slice(1)}</div></div>`).join('')}</div>
+    <div class="pay-methods">
+      ${['click', 'payme', 'uzcard']
+				.map(
+					m => `
+        <div class="pay-method ${m === selectedPay ? 'sel' : ''}" onclick="selPay('${m}')">
+          <div class="pay-method-emoji">${pe[m]}</div>
+          <div class="pay-method-name">${m[0].toUpperCase() + m.slice(1)}</div>
+        </div>`,
+				)
+				.join('')}
+    </div>
     <div class="card-info-box">
       <div class="card-info-label">Karta raqami</div>
       <div class="card-number" onclick="copyCard()">${pay.card_number}</div>
       <div class="card-owner">Egasi: ${pay.owner_name}</div>
       <div class="copy-tip">👆 Bosib nusxalash</div>
     </div>
-    <div class="form-group"><label class="form-label">Qaysi accountga?</label><input class="form-input" id="inp-target" placeholder="@username yoki +998..." /></div>
-    <div class="form-group"><label class="form-label">Ismingiz (ixtiyoriy)</label><input class="form-input" id="inp-name" placeholder="Ism Familiya" /></div>
-    <div class="form-group"><label class="form-label">To'lov cheki (screenshot)</label><input class="form-input" type="file" id="inp-file" accept="image/*" /></div>
-    <button class="submit-btn" onclick="submitOrder()">✅ Buyurtma berish</button>`;
+    <div class="form-group">
+      <label class="form-label">Qaysi accountga? (username yoki telefon) *</label>
+      <input class="form-input" id="inp-target" placeholder="@username yoki +998901234567" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Ismingiz *</label>
+      <input class="form-input" id="inp-name" placeholder="Ism Familiya" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">📸 To'lov cheki (screenshot) *</label>
+      <input class="form-input" type="file" id="inp-file" accept="image/*" onchange="previewFile(this)" />
+      <img id="preview-img" class="screenshot-preview" style="display:none" />
+    </div>
+    <button class="submit-btn" id="submit-btn" onclick="submitOrder()">✅ Buyurtma berish</button>`;
 			}
+
+			function previewFile(input) {
+				const img = document.getElementById('preview-img');
+				if (input.files && input.files[0]) {
+					img.src = URL.createObjectURL(input.files[0]);
+					img.style.display = 'block';
+				}
+			}
+
 			function selPay(m) {
 				selectedPay = m;
 				renderBuyModal();
 			}
+
 			function copyCard() {
 				const p = payConfigs[selectedPay];
 				if (p) {
@@ -1035,14 +1205,29 @@
 					toast('✅ Karta nusxalandi!');
 				}
 			}
+
 			async function submitOrder() {
 				const target = document.getElementById('inp-target').value.trim();
 				const name = document.getElementById('inp-name').value.trim();
 				const fi = document.getElementById('inp-file');
+
 				if (!target) {
 					toast('⚠️ Account kiritish shart!');
 					return;
 				}
+				if (!name) {
+					toast('⚠️ Ismingizni kiriting!');
+					return;
+				}
+				if (!fi.files[0]) {
+					toast("⚠️ To'lov cheki (screenshot) yuborish shart!");
+					return;
+				}
+
+				const btn = document.getElementById('submit-btn');
+				btn.disabled = true;
+				btn.textContent = '⏳ Yuborilmoqda...';
+
 				try {
 					const o = await fetch(`${API}/orders/`, {
 						method: 'POST',
@@ -1051,22 +1236,40 @@
 							product_id: selectedProduct.id,
 							payment_method: selectedPay,
 							target_account: target,
-							customer_name: name || 'Mehmon',
+							customer_name: name,
 						}),
 					}).then(r => r.json());
-					if (fi.files[0]) {
-						const fd = new FormData();
-						fd.append('file', fi.files[0]);
-						await fetch(`${API}/orders/${o.id}/screenshot`, { method: 'POST', body: fd });
-					}
+
+					// Screenshot yuborish
+					const fd = new FormData();
+					fd.append('file', fi.files[0]);
+					await fetch(`${API}/orders/${o.id}/screenshot`, { method: 'POST', body: fd });
+
+					// 15 daqiqa cooldown belgilash
+					localStorage.setItem('last_order_time_' + selectedProduct.id, Date.now().toString());
+
 					myOrderIds.push(o.id);
 					localStorage.setItem('tg_orders', JSON.stringify(myOrderIds));
-					document.getElementById('modal-body').innerHTML =
-						`<div class="success-box"><div class="success-emoji">🎉</div><div class="success-title">Buyurtma qabul qilindi!</div><span class="order-id-badge">#${o.id}</span><div class="success-sub">Admin 5–30 daqiqa ichida yetkazadi.</div></div><button class="submit-btn" onclick="closeModal()" style="background:var(--green)">✅ Yaxshi!</button>`;
+
+					document.getElementById('modal-body').innerHTML = `
+      <div class="success-box">
+        <div class="success-emoji">🎉</div>
+        <div class="success-title">Buyurtma qabul qilindi!</div>
+        <span class="order-id-badge">#${o.id}</span>
+        <div class="success-sub">
+          Admin to'lovni tekshirib, 5–30 daqiqa ichida yetkazadi.<br><br>
+          <b>Muhim:</b> Shu oynani yopmang, statusni kuting!
+        </div>
+      </div>
+      <button class="submit-btn" onclick="closeModal()" style="background:var(--green)">✅ Yaxshi!</button>`;
 				} catch (e) {
-					toast('❌ Xato! Backend ishlayaptimi?');
+					btn.disabled = false;
+					btn.textContent = '✅ Buyurtma berish';
+					toast('❌ Xato yuz berdi!');
 				}
 			}
+
+			// ─── MY ORDERS ────────────────────────────
 			async function renderMyOrders() {
 				const c = document.getElementById('my-orders-container');
 				if (!myOrderIds.length) return;
@@ -1085,11 +1288,28 @@
 					).filter(Boolean);
 					const sc = { pending: 'status-pending', confirmed: 'status-confirmed', cancelled: 'status-cancelled' };
 					const st = { pending: '⏳ Kutilmoqda', confirmed: '✅ Tasdiqlangan', cancelled: '❌ Bekor' };
-					c.innerHTML = `<div class="orders-list">${orders.map(o => `<div class="order-item"><div class="order-item-emoji">${o.product?.emoji || '📦'}</div><div class="order-item-info"><div class="order-item-title">${o.product?.title || 'Mahsulot'}</div><div class="order-item-meta">💳 ${o.payment_method} · #${o.id}</div></div><div class="order-item-right"><div class="order-item-price">${fmt(o.amount)}</div><span class="status-badge ${sc[o.status]}">${st[o.status]}</span></div></div>`).join('')}</div>`;
+					c.innerHTML = `<div class="orders-list">${orders
+						.map(
+							o => `
+      <div class="order-item">
+        <div class="order-item-emoji">${o.product?.emoji || '📦'}</div>
+        <div class="order-item-info">
+          <div class="order-item-title">${o.product?.title || 'Mahsulot'}</div>
+          <div class="order-item-meta">💳 ${o.payment_method} · 👤 ${o.target_account} · #${o.id}</div>
+        </div>
+        <div class="order-item-right">
+          <div class="order-item-price">${fmt(o.amount)}</div>
+          <span class="status-badge ${sc[o.status]}">${st[o.status]}</span>
+        </div>
+      </div>`,
+						)
+						.join('')}</div>`;
 				} catch (e) {
-					c.innerHTML = '<div class="empty-state"><div class="empty-emoji">❌</div><p>Server bilan aloqa yo\'q</p></div>';
+					c.innerHTML = '<div class="empty-state"><div class="empty-emoji">❌</div><p>Server bilan aloqa yoq</p></div>';
 				}
 			}
+
+			// ─── ADMIN ────────────────────────────────
 			async function adminSection(s, el) {
 				document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
 				el.classList.add('active');
@@ -1102,72 +1322,130 @@
 				else if (s === 'products') await renderAdminProducts(m);
 				else if (s === 'users') await renderUsers(m);
 			}
+
 			async function renderDashboard(m) {
 				try {
 					const d = await fetch(`${API}/admin/dashboard`).then(r => r.json());
-					m.innerHTML = `<div class="admin-page-title">📊 Dashboard</div>
-    <div class="stats-grid">
-      <div class="stat-box blue"><div class="stat-box-label">Foydalanuvchilar</div><div class="stat-box-value">${d.total_users}</div></div>
-      <div class="stat-box orange"><div class="stat-box-label">Kutilayotgan</div><div class="stat-box-value">${d.pending_orders}</div><div class="stat-box-sub">tasdiqlash kerak</div></div>
-      <div class="stat-box"><div class="stat-box-label">Jami buyurtma</div><div class="stat-box-value">${d.total_orders}</div></div>
-      <div class="stat-box green"><div class="stat-box-label">Jami daromad</div><div class="stat-box-value">${(d.total_revenue / 1000000).toFixed(1)}M</div><div class="stat-box-sub">so'm</div></div>
-    </div>
-    <div class="stats-grid" style="grid-template-columns:1fr 1fr 1fr">
-      <div class="stat-box"><div class="stat-box-label">Bugun buyurtma</div><div class="stat-box-value">${d.today_orders}</div></div>
-      <div class="stat-box green"><div class="stat-box-label">Bugun daromad</div><div class="stat-box-value">${Math.round(d.today_revenue / 1000)}K</div></div>
-      <div class="stat-box red"><div class="stat-box-label">Bekor qilingan</div><div class="stat-box-value">${d.cancelled_orders}</div></div>
-    </div>`;
+					m.innerHTML = `
+      <div class="admin-page-title">📊 Dashboard</div>
+      <div class="stats-grid">
+        <div class="stat-box blue"><div class="stat-box-label">Foydalanuvchilar</div><div class="stat-box-value">${d.total_users}</div></div>
+        <div class="stat-box orange"><div class="stat-box-label">Kutilayotgan</div><div class="stat-box-value">${d.pending_orders}</div><div class="stat-box-sub">tasdiqlash kerak</div></div>
+        <div class="stat-box"><div class="stat-box-label">Jami buyurtma</div><div class="stat-box-value">${d.total_orders}</div></div>
+        <div class="stat-box green"><div class="stat-box-label">Jami daromad</div><div class="stat-box-value">${(d.total_revenue / 1000000).toFixed(1)}M</div><div class="stat-box-sub">so'm</div></div>
+      </div>
+      <div class="stats-grid" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="stat-box"><div class="stat-box-label">Bugun buyurtma</div><div class="stat-box-value">${d.today_orders}</div></div>
+        <div class="stat-box green"><div class="stat-box-label">Bugun daromad</div><div class="stat-box-value">${Math.round(d.today_revenue / 1000)}K</div></div>
+        <div class="stat-box red"><div class="stat-box-label">Bekor qilingan</div><div class="stat-box-value">${d.cancelled_orders}</div></div>
+      </div>`;
 				} catch (e) {
 					m.innerHTML = '<div style="padding:40px;color:#999">❌ Ulanish xatosi</div>';
 				}
 			}
+
 			async function renderAdminOrders(m) {
 				try {
 					const orders = await fetch(`${API}/orders/?limit=100`).then(r => r.json());
 					const sc = { pending: 'status-pending', confirmed: 'status-confirmed', cancelled: 'status-cancelled' };
 					const st = { pending: '⏳ Kutilmoqda', confirmed: '✅ Tasdiqlangan', cancelled: '❌ Bekor' };
-					m.innerHTML = `<div class="admin-page-title">📋 Barcha buyurtmalar</div><div class="table-wrap"><table><tr><th>#</th><th>Mahsulot</th><th>Summa</th><th>To'lov</th><th>Account</th><th>Status</th><th>Amal</th></tr>
-    ${orders.map(o => `<tr><td><b>#${o.id}</b></td><td>${o.product?.title || '—'}</td><td><b>${fmt(o.amount)}</b></td><td>${o.payment_method}</td><td><code>${o.target_account || '—'}</code></td><td><span class="status-badge ${sc[o.status]}">${st[o.status]}</span></td><td style="display:flex;gap:6px">${o.status === 'pending' ? `<button class="action-btn btn-confirm" onclick="updateStatus(${o.id},'confirmed')">✅</button><button class="action-btn btn-cancel" onclick="updateStatus(${o.id},'cancelled')">❌</button>` : '—'}${o.screenshot_path ? `<a href="${BACKEND}${o.screenshot_path}" target="_blank" style="font-size:12px;color:var(--tg)">📷</a>` : ''}</td></tr>`).join('')}
-    </table></div>`;
+					m.innerHTML = `
+      <div class="admin-page-title">📋 Buyurtmalar</div>
+      <div class="table-wrap"><table>
+        <tr><th>#</th><th>Mahsulot</th><th>Summa</th><th>To'lov</th><th>Account</th><th>Chek</th><th>Status</th><th>Amal</th></tr>
+        ${orders
+					.map(
+						o => `
+        <tr>
+          <td><b>#${o.id}</b></td>
+          <td>${o.product?.title || '—'}</td>
+          <td><b>${fmt(o.amount)}</b></td>
+          <td>${o.payment_method}</td>
+          <td><code>${o.target_account || '—'}</code></td>
+          <td>${
+						o.screenshot_path
+							? `<img class="screenshot-thumb" src="${BACKEND}${o.screenshot_path}" onclick="viewImg('${BACKEND}${o.screenshot_path}')" title="Chekni ko'rish">`
+							: '<span style="color:#ccc">Yoq</span>'
+					}</td>
+          <td><span class="status-badge ${sc[o.status]}">${st[o.status]}</span></td>
+          <td style="display:flex;gap:6px">
+            ${
+							o.status === 'pending'
+								? `
+              <button class="action-btn btn-confirm" onclick="updateStatus(${o.id},'confirmed',${o.product_id})">✅</button>
+              <button class="action-btn btn-cancel" onclick="updateStatus(${o.id},'cancelled',null)">❌</button>
+            `
+								: '—'
+						}
+          </td>
+        </tr>`,
+					)
+					.join('')}
+      </table></div>`;
 				} catch (e) {
 					m.innerHTML = '<div style="padding:40px;color:#999">❌ Ulanish xatosi</div>';
 				}
 			}
-			async function updateStatus(id, status) {
+
+			function viewImg(src) {
+				document.getElementById('img-viewer').src = src;
+				document.getElementById('img-overlay').classList.add('open');
+			}
+
+			async function updateStatus(id, status, productId) {
 				try {
 					await fetch(`${API}/orders/${id}/status`, {
 						method: 'PATCH',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ status }),
 					});
+					// NFT bo'lsa stock kamaytirish
+					if (status === 'confirmed' && productId) {
+						const p = allProducts.find(x => x.id === productId);
+						if (p && p.category === 'nft' && p.stock > 0) {
+							await fetch(`${API}/products/${productId}`, {
+								method: 'PUT',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify({ stock: p.stock - 1, is_active: p.stock - 1 > 0 }),
+							});
+							loadProducts();
+						}
+					}
 					toast(status === 'confirmed' ? '✅ Tasdiqlandi!' : '❌ Bekor qilindi!');
 					adminSection('orders', document.querySelector('.sidebar-item.active'));
 				} catch (e) {
 					toast('❌ Xato!');
 				}
 			}
+
 			async function renderPaymentConfig(m) {
 				await loadPayConfigs();
 				const pe = { click: '🔵', payme: '🟢', uzcard: '🟡' };
-				m.innerHTML = `<div class="admin-page-title">💳 To'lov sozlamalari</div><div class="pay-config-grid">${[
-					'click',
-					'payme',
-					'uzcard',
-				]
-					.map(x => {
-						const c = payConfigs[x] || {};
-						return `<div class="pay-config-card"><div class="pay-config-name">${pe[x]} ${x[0].toUpperCase() + x.slice(1)}</div><input class="pay-config-input" id="card-${x}" value="${c.card_number || ''}" placeholder="8600 xxxx xxxx xxxx" /><input class="pay-config-input" id="owner-${x}" value="${c.owner_name || ''}" placeholder="Ism Familiya" /><button class="save-btn" onclick="savePayConfig('${x}')">💾 Saqlash</button></div>`;
-					})
-					.join('')}</div>`;
+				m.innerHTML = `
+    <div class="admin-page-title">💳 To'lov sozlamalari</div>
+    <div class="pay-config-grid">
+      ${['click', 'payme', 'uzcard']
+				.map(x => {
+					const c = payConfigs[x] || {};
+					return `<div class="pay-config-card">
+          <div class="pay-config-name">${pe[x]} ${x[0].toUpperCase() + x.slice(1)}</div>
+          <input class="pay-config-input" id="card-${x}" value="${c.card_number || ''}" placeholder="8600 xxxx xxxx xxxx" />
+          <input class="pay-config-input" id="owner-${x}" value="${c.owner_name || ''}" placeholder="Ism Familiya" />
+          <button class="save-btn" onclick="savePayConfig('${x}')">💾 Saqlash</button>
+        </div>`;
+				})
+				.join('')}
+    </div>`;
 			}
-			async function savePayConfig(m) {
+
+			async function savePayConfig(method) {
 				try {
-					await fetch(`${API}/admin/payments/${m}`, {
+					await fetch(`${API}/admin/payments/${method}`, {
 						method: 'PUT',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({
-							card_number: document.getElementById(`card-${m}`).value.trim(),
-							owner_name: document.getElementById(`owner-${m}`).value.trim(),
+							card_number: document.getElementById(`card-${method}`).value.trim(),
+							owner_name: document.getElementById(`owner-${method}`).value.trim(),
 							is_active: true,
 						}),
 					});
@@ -1177,9 +1455,30 @@
 					toast('❌ Xato!');
 				}
 			}
+
 			function renderAddProduct(m) {
-				m.innerHTML = `<div class="admin-page-title">➕ Yangi mahsulot qo'shish</div><div class="add-form"><div class="form-row"><div class="form-group"><label class="form-label">Kategoriya</label><select id="ap-cat"><option value="nft">NFT</option><option value="username">Username</option><option value="stars">Stars</option><option value="premium">Premium</option></select></div><div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="ap-emoji" value="💎" /></div></div><div class="form-group"><label class="form-label">Nomi</label><input class="form-input" id="ap-title" placeholder="Mahsulot nomi" /></div><div class="form-group"><label class="form-label">Tavsif</label><textarea id="ap-desc" placeholder="Tavsif..."></textarea></div><div class="form-row"><div class="form-group"><label class="form-label">Narx (so'm)</label><input class="form-input" type="number" id="ap-price" placeholder="120000" /></div><div class="form-group"><label class="form-label">Eski narx</label><input class="form-input" type="number" id="ap-oldprice" placeholder="150000" /></div></div><div class="form-row"><div class="form-group"><label class="form-label">Arenda?</label><select id="ap-rental"><option value="false">Yo'q</option><option value="true">Ha</option></select></div><div class="form-group"><label class="form-label">Kunlar</label><input class="form-input" type="number" id="ap-days" placeholder="7" /></div></div><button class="add-submit" onclick="addProduct()">✅ Qo'shish</button></div>`;
+				m.innerHTML = `
+    <div class="admin-page-title">➕ Yangi mahsulot qo'shish</div>
+    <div class="add-form">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Kategoriya</label>
+          <select id="ap-cat"><option value="nft">NFT</option><option value="username">Username</option><option value="stars">Stars</option><option value="premium">Premium</option></select></div>
+        <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="ap-emoji" value="💎" /></div>
+      </div>
+      <div class="form-group"><label class="form-label">Nomi *</label><input class="form-input" id="ap-title" placeholder="Mahsulot nomi" /></div>
+      <div class="form-group"><label class="form-label">Tavsif</label><textarea id="ap-desc" placeholder="Tavsif..."></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Narx (so'm) *</label><input class="form-input" type="number" id="ap-price" placeholder="120000" /></div>
+        <div class="form-group"><label class="form-label">Eski narx</label><input class="form-input" type="number" id="ap-oldprice" placeholder="150000" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Miqdor (stock)</label><input class="form-input" type="number" id="ap-stock" placeholder="1" value="1" /></div>
+        <div class="form-group"><label class="form-label">Arenda?</label><select id="ap-rental"><option value="false">Yoq</option><option value="true">Ha</option></select></div>
+      </div>
+      <button class="add-submit" onclick="addProduct()">✅ Qoshish</button>
+    </div>`;
 			}
+
 			async function addProduct() {
 				const d = {
 					category: document.getElementById('ap-cat').value,
@@ -1188,11 +1487,11 @@
 					description: document.getElementById('ap-desc').value,
 					price: parseInt(document.getElementById('ap-price').value),
 					original_price: parseInt(document.getElementById('ap-oldprice').value) || null,
+					stock: parseInt(document.getElementById('ap-stock').value) || 1,
 					is_rental: document.getElementById('ap-rental').value === 'true',
-					rental_days: parseInt(document.getElementById('ap-days').value) || null,
 				};
 				if (!d.title || !d.price) {
-					toast('⚠️ Nom va narx kiritish shart!');
+					toast('Nom va narx kiritish shart!');
 					return;
 				}
 				try {
@@ -1201,20 +1500,67 @@
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify(d),
 					});
-					toast("✅ Mahsulot qo'shildi!");
+					toast('Mahsulot qoshildi!');
 					loadProducts();
 				} catch (e) {
-					toast('❌ Xato!');
+					toast('Xato!');
 				}
 			}
+
 			async function renderAdminProducts(m) {
 				try {
 					const ps = await fetch(`${API}/products/`).then(r => r.json());
-					m.innerHTML = `<div class="admin-page-title">📦 Barcha mahsulotlar (${ps.length})</div><div class="products-admin-grid">${ps.map(p => `<div class="p-admin-card"><div style="font-size:24px">${p.emoji}</div><div class="p-admin-info"><div class="p-admin-title">${p.title}</div><div class="p-admin-price">${fmt(p.price)}</div></div><button class="toggle-active ${p.is_active ? 'is-active' : 'is-inactive'}" onclick="toggleProduct(${p.id},${!p.is_active},this)">${p.is_active ? '✅' : '❌'}</button></div>`).join('')}</div>`;
+					m.innerHTML = `
+      <div class="admin-page-title">📦 Barcha mahsulotlar (${ps.length})</div>
+      <div class="products-admin-grid">
+        ${ps
+					.map(
+						p => `
+          <div class="p-admin-card">
+            <div class="p-admin-top">
+              <div style="font-size:24px">${p.emoji}</div>
+              <div class="p-admin-info">
+                <div class="p-admin-title">${p.title}</div>
+                <div class="p-admin-price">${fmt(p.price)} · Stock: ${p.stock}</div>
+              </div>
+              <button class="toggle-active ${p.is_active ? 'is-active' : 'is-inactive'}"
+                onclick="toggleProduct(${p.id},${!p.is_active},this)">
+                ${p.is_active ? 'Faol' : 'Yopiq'}
+              </button>
+            </div>
+            <div class="p-admin-actions">
+              <input class="edit-price-input" id="price-${p.id}" type="number" value="${p.price}" placeholder="Narx" />
+              <button class="price-save-btn" onclick="updatePrice(${p.id})">💰 Narxni saqlash</button>
+            </div>
+          </div>`,
+					)
+					.join('')}
+      </div>`;
 				} catch (e) {
 					m.innerHTML = '<div style="padding:40px;color:#999">❌ Ulanish xatosi</div>';
 				}
 			}
+
+			async function updatePrice(id) {
+				const newPrice = parseInt(document.getElementById(`price-${id}`).value);
+				if (!newPrice || newPrice < 100) {
+					toast("Narx noto'g'ri!");
+					return;
+				}
+				try {
+					await fetch(`${API}/products/${id}`, {
+						method: 'PUT',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ price: newPrice }),
+					});
+					toast('Narx yangilandi!');
+					loadProducts();
+					adminSection('products', document.querySelector('.sidebar-item.active'));
+				} catch (e) {
+					toast('Xato!');
+				}
+			}
+
 			async function toggleProduct(id, active, btn) {
 				try {
 					await fetch(`${API}/products/${id}`, {
@@ -1222,22 +1568,41 @@
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ is_active: active }),
 					});
-					btn.textContent = active ? '✅' : '❌';
+					btn.textContent = active ? 'Faol' : 'Yopiq';
 					btn.className = `toggle-active ${active ? 'is-active' : 'is-inactive'}`;
-					toast(active ? '✅ Faollashtirildi' : "❌ O'chirildi");
+					toast(active ? 'Faollashtirildi' : 'Yopildi');
 					loadProducts();
 				} catch (e) {
-					toast('❌ Xato!');
+					toast('Xato!');
 				}
 			}
+
 			async function renderUsers(m) {
 				try {
 					const us = await fetch(`${API}/users/`).then(r => r.json());
-					m.innerHTML = `<div class="admin-page-title">👥 Foydalanuvchilar</div><div class="table-wrap"><table><tr><th>#</th><th>Ism</th><th>Username</th><th>Buyurtmalar</th><th>Jami xarid</th></tr>${us.map(u => `<tr><td>${u.id}</td><td>${u.full_name || '—'}</td><td>${u.username ? '@' + u.username : '—'}</td><td>${u.total_orders}</td><td><b>${fmt(u.total_spent)}</b></td></tr>`).join('')}</table></div>`;
+					m.innerHTML = `
+      <div class="admin-page-title">👥 Foydalanuvchilar</div>
+      <div class="table-wrap"><table>
+        <tr><th>#</th><th>Ism</th><th>Username</th><th>Buyurtmalar</th><th>Jami xarid</th></tr>
+        ${us
+					.map(
+						u => `
+          <tr>
+            <td>${u.id}</td>
+            <td>${u.full_name || '—'}</td>
+            <td>${u.username ? '@' + u.username : '—'}</td>
+            <td>${u.total_orders}</td>
+            <td><b>${fmt(u.total_spent)}</b></td>
+          </tr>`,
+					)
+					.join('')}
+      </table></div>`;
 				} catch (e) {
 					m.innerHTML = '<div style="padding:40px;color:#999">❌ Ulanish xatosi</div>';
 				}
 			}
+
+			// Init
 			if (isAdmin) document.getElementById('admin-btn').style.display = '';
 			loadProducts();
 			loadPayConfigs();
